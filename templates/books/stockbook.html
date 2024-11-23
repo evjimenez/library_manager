@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Actualizar Cantidad de Libros</h2>
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <title>Actualizar Cantidad de Libros</title>
+        <style>
+            .alert-error {
+                background-color: #f8d7da; /* Color de fondo rojo claro */
+                color: #721c24; /* Color del texto rojo oscuro */
+                border: 1px solid #f5c6cb; /* Borde rojo */
+            }
+        </style>
+    </head>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="code" class="form-label">Código del Libro</label>
+        <input type="text" class="form-control" id="code" name="code" required>
+    </div>
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Cantidad a Agregar</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Actualizar Cantidad</button>
+</form>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% endblock %}

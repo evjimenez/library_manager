@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Editar Libro</h2>
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <title>Crear Libro</title>
+        <style>
+            .alert-error {
+                background-color: #f8d7da; /* Color de fondo rojo claro */
+                color: #721c24; /* Color del texto rojo oscuro */
+                border: 1px solid #f5c6cb; /* Borde rojo */
+            }
+        </style>
+    </head>
+    
+<form method="POST">
+    <div class="mb-3">
+        <label for="title" class="form-label">Titulo</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ book[1] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="author" class="form-label">Autor</label>
+        <input type="text" class="form-control" id="author" name="author" value="{{ book[2] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="materia" class="form-label">Materia</label>
+        <input type="text" class="form-control" id="materia" name="materia" value="{{ book[3] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="code" class="form-label">Código</label>
+        <input type="text" class="form-control" id="code" name="code" value="{{ book[4] }}" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="acquisition_date" class="form-label">Fecha Ingreso</label>
+        <input type="date" class="form-control" id="acquisition_date" name="acquisition_date" value="{{ book[5] }}" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="status" class="form-label">Estado</label>
+        <select class="form-control" id="status" name="status" required>
+            <option value="DISPONIBLE" {% if book[6] == 'DISPONIBLE' %}selected{% endif %}>Disponible</option>
+            <option value="PRESTADO" {% if book[6] == 'PRESTADO' %}selected{% endif %}>Prestado</option>
+            <option value="OBSOLETO" {% if book[6] == 'OBSOLETO' %}selected{% endif %}>Obsoleto</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Cantidad</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" value="{{ book[7] }}" min="0" required>
+    </div>
+    <!-- <button type="submit" class="btn btn-primary">Actualizar</button> -->
+    <div class="d-flex justify-content-between">
+        <a href="{{ url_for('list_books') }}" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+    </div>
+    
+</form>
+{% endblock %}

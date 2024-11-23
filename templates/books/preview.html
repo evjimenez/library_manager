@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Vista Previa del Libro</h2>
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Detalles del Libro</h5>
+        <p class="card-text"><strong>Título:</strong> {{ book[1] }}</p>
+        <p class="card-text"><strong>Autor:</strong> {{ book[2] }}</p>
+        <p class="card-text"><strong>Materia:</strong> {{ book[3] }}</p>
+        <p class="card-text"><strong>Código:</strong> {{ book[4] }}</p>
+        <p class="card-text"><strong>Fecha de Ingreso:</strong> {{ book[5] }}</p>
+        <p class="card-text"><strong>Cantidad:</strong> {{ book[7] }}</p>
+        <p class="card-text"><strong>Estado:</strong> {{ book[8] }}</p>
+    </div>
+</div>
+<a href="{{ url_for('list_books') }}" class="btn btn-primary w-100">Volver a la lista de libros</a>
+{% endblock %}

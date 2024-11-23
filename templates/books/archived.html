@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Libros Archivados</h2>
+<table class="table table-striped" id="archivedBooksTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Titulo</th>
+            <th>Autor</th>
+            <th>Materia</th>
+            <th>Código</th>
+            <th>Fecha Ingreso</th>
+            <th>Cantidad</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>{{ book[0] }}</td>
+            <td>{{ book[1] }}</td>
+            <td>{{ book[2] }}</td>
+            <td>{{ book[3] }}</td>
+            <td>{{ book[4] }}</td>
+            <td>{{ book[5] }}</td>
+            <td>{{ book[6] }}</td>
+            <td>{{ book[8] }}</td>
+            <!-- agregando aca botones eliminar y recuperar -- Victor Orellana -->
+            <td>
+                <a href="{{ url_for('delete_book', id=book[0]) }}" class="btn btn-sm btn-danger" onclick="Confirmación('¿Está seguro de que desea eliminar este libro?')">Eliminar</a>
+            </td>
+            <td>
+                <form action="{{ url_for('recover_book', id=book[0]) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-info">Recuperar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

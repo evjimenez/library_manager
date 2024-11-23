@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Registrar Devolución</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label for="id_loan" class="form-label">Préstamo a Devolver</label>
+        <select name="id_loan" id="id_loan" class="form-select" required>
+            <option value="">Seleccione un préstamo</option>
+            {% for loan in loans %}
+                <option value="{{ loan[0] }}">{{ loan[8] }} {{ loan[9] }} - {{ loan[10] }} (Prestado: {{ loan[2] }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div id="books_container" class="mb-3" style="display: none;">
+        <label class="form-label">Libros a Devolver</label>
+        <div id="books_list"></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
+<script src="{{ url_for('static', filename='js/returns.js') }}"></script>
+
+{% endblock %}

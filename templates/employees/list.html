@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Lista de Empleados</h2>
+
+<a href="{{ url_for('create_employee') }}" class="btn btn-primary mb-3">Registrar Nuevo Empleado</a>
+
+{% if employees %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee[1] }}</td>
+                <td>{{ employee[2] }} {{ employee[3] }}</td>
+                <td>{{ employee[8] }}</td>
+                <td>{{ employee[6] }}</td>
+                <td>{{ employee[10] }}</td>
+                <td>
+                    <a href="{{ url_for('edit_employee', id=employee[0]) }}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{{ url_for('delete_employee', id=employee[0]) }}" 
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('¿Está seguro de eliminar este empleado?')">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="alert alert-info">No hay empleados registrados.</p>
+{% endif %}
+
+{% endblock %}

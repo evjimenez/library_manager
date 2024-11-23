@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Libros</h2>
+<div class="d-flex mb-3 align-items-center">
+    <!--
+
+    Codigo original en donde estaba la disposición de los botones pero con texto
+    
+    <form class="me-2" method="GET" action="{{ url_for('search_books_by_title_author') }}">
+        <input type="text" name="query" placeholder="Buscar por Titulo, Autor y Materia" value="{{ query }}" required class="form-control" style="width: 300px;">
+        <button type="submit" class="btn btn-primary mb-3" style="margin-right: 20px;">Buscar</button>
+    </form>
+    <a href="{{ url_for('create_book') }}" class="btn btn-primary ms-3">Agregar Libro</a>
+    
+    -->
+
+    <!-- Inicio de la modificación -->
+    <div class="d-flex align-items-center mb-3">
+        <form class="d-flex me-2" method="GET" action="{{ url_for('search_books_by_title_author') }}">
+            <input type="text" name="query" placeholder="Buscar por Titulo, Autor y Materia" value="{{ query }}" required class="form-control" style="width: 300px;">
+            <button type="submit" class="btn btn-primary ms-2">
+                <i class="fas fa-search"></i>
+            </button>
+            <a href="{{ url_for('create_book') }}" class="btn btn-primary ms-3">
+                <i class="fas fa-plus"></i>
+            </a>
+            <a href="{{ url_for('archived_books') }}" class="btn btn-secondary ms-3">
+                Ver Libros Archivados
+            </a>
+        </form>
+        
+    </div>
+
+    <!--- Final de la modificacion  -->
+</div>
+<table class="table table-striped" id="booksTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Titulo</th>
+            <th>Autor</th>
+            <th>Materia</th>
+            <th>Código</th>
+            <th>Fecha Ingreso</th>
+            <th>Cantidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>{{ book[0] }}</td>
+            <td>{{ book[1] }}</td>
+            <td>{{ book[2] }}</td>
+            <td>{{ book[3] }}</td>
+            <td>{{ book[4] }}</td>
+            <td>{{ book[5] }}</td>
+            <td>{{ book[6] }}</td>
+            <td>{{ book[7] }}</td>
+            <td>
+                <a href="{{ url_for('edit_book', id=book[0]) }}" class="btn btn-sm btn-warning">Editar</a>
+                <form action="{{ url_for('archive_book', id=book[0]) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de que desea archivar este libro?')">Archivar</button>
+                </form>
+                <a href="#" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detailsModal" data-id="{{ book[0] }}">Ver Estado</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Aquí se cargará el contenido del popup -->
+        </div>
+    </div>
+</div>
+
+<!-- Incluye los scripts de Bootstrap y jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#detailsModal').on('show.bs.modal', function (e) {
+            var button = $(e.relatedTarget);
+            var bookId = button.data('id');
+            var modal = $(this);
+            $.ajax({
+                url: "{{ url_for('book_details', id=0) }}".replace('0', bookId),
+                success: function(response) {
+                    modal.find('.modal-content').html(response);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

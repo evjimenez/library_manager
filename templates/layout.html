@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizonte</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Recurso para iconos -->
+    <style>
+        .menu-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .menu-item {
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Estilo para el nombre del usuario */
+        .user-name {
+            color: white;
+            margin-right: 15px;
+        }
+
+        /* Estilo para el botón de logout */
+        .logout-btn {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .logout-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <a href="{{ url_for('index') }}" class="navbar-brand">Inicio</a>
+                {% if session.get('employee_id') %}
+                    <div class="d-flex align-items-center">
+                        <span class="user-name">{{ session.get('employee_name') }}</span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+                <!-- 
+            Este bloque maneja la visualización de mensajes flash.
+            Los mensajes flash son mensajes temporales (generalmente de éxito o error)
+            que se muestran una sola vez después de una acción del usuario.
+
+            1. get_flashed_messages(with_categories=true) recupera todos los mensajes flash,
+                incluyendo sus categorías (por ejemplo, 'success', 'error', 'info').
+            2. Si hay mensajes, se itera sobre ellos.
+            3. Para cada mensaje, se crea un div con una clase de alerta 
+                correspondiente a su categoría.
+            4. El mensaje se muestra dentro de este div.
+            5. Después de mostrarlos, estos mensajes se eliminan automáticamente
+                y no se mostrarán en la próxima carga de página.
+            -->
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1 class="mb-4">{% block title %}{% endblock %}</h1>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

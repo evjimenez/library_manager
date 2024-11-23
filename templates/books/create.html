@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Agregar Libro</h2>
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <title>Crear Libro</title>
+        <style>
+            .alert-error {
+                background-color: #f8d7da; /* Color de fondo rojo claro */
+                color: #721c24; /* Color del texto rojo oscuro */
+                border: 1px solid #f5c6cb; /* Borde rojo */
+            }
+        </style>
+    </head>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="title" class="form-label">Titulo</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="author" class="form-label">Autor</label>
+        <input type="text" class="form-control" id="author" name="author" required>
+    </div>
+    <div class="mb-3">
+        <label for="materia" class="form-label">Materia</label>
+        <input type="text" class="form-control" id="materia" name="materia" required>
+    </div>
+    <div class="mb-3">
+        <label for="code" class="form-label">Código</label>
+        <input type="text" class="form-control" id="code" name="code" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="acquisition_date" class="form-label">Fecha Ingreso</label>
+        <input type="date" class="form-control" id="acquisition_date" name="acquisition_date" required readonly>
+    </div>
+    <div class="mb-3">
+        <label for="status" class="form-label">Estado</label>
+        <select class="form-control" id="status" name="status" required>
+            <option value="DISPONIBLE">Disponible</option>
+            <option value="PRESTADO">Prestado</option>
+            <option value="OBSOLETO">Obsoleto</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="quantity" class="form-label">Cantidad</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" min="0" required>
+    </div> 
+    <div class="d-flex justify-content-between">
+        <a href="{{ url_for('list_books') }}" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Agregar Libro</button>
+    </div>
+    <!-- Botón para redirigir a la vista de actualizar cantidad de libros -->
+    <div class="mt-3">
+        <a href="{{ url_for('update_quantity') }}" class="btn btn-secondary">Agregar Libro Existente</a>
+    </div>
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('acquisition_date').value = today;
+    });
+</script>
+{% endblock %}
