@@ -23,6 +23,22 @@ CREATE TABLE IF NOT EXISTS books (
     status ENUM('DISPONIBLE', 'PRESTADO', 'OBSOLETO') DEFAULT 'DISPONIBLE'
 );
 
+CREATE TABLE IF NOT EXISTS employees (
+    id_employee INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(10) UNIQUE NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    national_id VARCHAR(10) UNIQUE NOT NULL,
+    address VARCHAR(150) NOT NULL, 
+    phone_number VARCHAR(15) NOT NULL,
+    birthdate DATE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('manager', 'librarian') NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS loans (
     id_loan INT AUTO_INCREMENT PRIMARY KEY,
     id_student INT NOT NULL,
@@ -65,22 +81,6 @@ CREATE TABLE IF NOT EXISTS returned_books (
     FOREIGN KEY (id_book) REFERENCES books(id_book)
 );
 
--- New Tables
-CREATE TABLE IF NOT EXISTS employees (
-    id_employee INT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(10) UNIQUE NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    national_id VARCHAR(10) UNIQUE NOT NULL,
-    address VARCHAR(150) NOT NULL, 
-    phone_number VARCHAR(15) NOT NULL,
-    birthdate DATE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('manager', 'librarian') NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 -- Indexes
 CREATE INDEX idx_student_name ON students(name, lastname);
@@ -89,8 +89,6 @@ CREATE INDEX idx_loan_dates ON loans(loan_date, return_date);
 CREATE INDEX idx_loan_student ON loans(id_student);
 CREATE INDEX idx_loan_book ON loan_books(id_book);
 
-
-
 -- Alter Table
 
 ALTER TABLE students ADD COLUMN late_fee DECIMAL(10,2) DEFAULT 0.00;
@@ -98,29 +96,7 @@ ALTER TABLE students ADD COLUMN late_fee DECIMAL(10,2) DEFAULT 0.00;
 ALTER TABLE books
 ADD COLUMN update_date DATETIME NULL;
 
-
-INSERT INTO employees (
-    code,
-    first_name,
-    last_name,
-    national_id,
-    address,
-    phone_number,
-    age,
-    email,
-    password,
-    role,
-    is_active
-) VALUES (
-    'GACL',
-    'Gerson',
-    'Carranza',
-    '05438654-8',
-    'Av. UFG',
-    '7777-7777',
-    '2000-05-08',
-    'gerson@gmail.com',
-    'admin',
-    'manager',
-    TRUE
-);
+INSERT INTO employees(code, first_name, last_name, national_id, address, phone_number, birthdate, email, password, role, created_at) values
+('GACL', 'Gerson', 'Carranza', '05438654-8', 'Av. UFG', '7777-7777', '2000-05-08', 'gerson@gmail.com', 'admin', 'manager', TRUE),
+('VAOV', 'Victor', 'Orellana', '04312681-1', 'La libertad', '8888-8888', '1990-08-10', 'victor@gmail.com', 'admin', 'librarian',TRUE),
+('NGVO', 'Nelson', 'Guevara', '08965214-7', 'San Salvador', '9999-9999', '2000-09-15', 'nelson@gmail.com', 'admin', 'librarian',TRUE);
