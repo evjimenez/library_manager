@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, flash
 from config import app
 from models.employee import Employee
 from controllers.auth_controller import manager_required
-from controllers.validation import validate_name, validate_lastname, validate_phone, validate_email
+from controllers.validation import validate_name, validate_lastname, validate_phone, validate_email, validate_birthdate
 
 @app.route('/employees')
 @manager_required
@@ -19,7 +19,7 @@ def create_employee():
         national_id = request.form.get('national_id')
         address = request.form.get('address')
         phone_number = request.form.get('phone_number')
-        age = request.form.get('age')
+        birthdate = request.form.get('birthdate')
         email = request.form.get('email')
         password = request.form.get('password')
         role = request.form.get('role')
@@ -39,6 +39,11 @@ def create_employee():
         if not is_valid:
             flash(message, 'error')
             return redirect(url_for('create_employee'))
+        
+        is_valid, message = validate_birthdate(birthdate)
+        if not is_valid:
+            flash(message, 'error')
+            return redirect(url_for('create_employee'))
 
         is_valid, message = validate_email(email)
         if not is_valid:
@@ -46,10 +51,10 @@ def create_employee():
             return redirect(url_for('create_employee'))
 
         # Generar código único para el empleado
-        code = Employee.generate_employee_code(last_name.upper())
+        code = Employee.generate_employee_code(first_name, last_name, birthdate)
 
         success, message = Employee.create(code, first_name, last_name, national_id, 
-                                        address, phone_number, age, email, password, role)
+                                        address, phone_number, birthdate, email, password, role)
         
         if success:
             flash(f"{message} Código del empleado: {code}", 'success')
@@ -73,12 +78,12 @@ def edit_employee(id):
         national_id = request.form.get('national_id')
         address = request.form.get('address')
         phone_number = request.form.get('phone_number')
-        age = request.form.get('age')
+        birthdate = request.form.get('birthdate')
         email = request.form.get('email')
         role = request.form.get('role')
 
         success, message = Employee.update(id, first_name, last_name, national_id, 
-                                        address, phone_number, age, email, role)
+                                        address, phone_number, birthdate, email, role)
         if success:
             flash('Empleado actualizado con éxito', 'success')
             return redirect(url_for('list_employees'))

@@ -26,13 +26,15 @@ CREATE TABLE IF NOT EXISTS books (
 CREATE TABLE IF NOT EXISTS loans (
     id_loan INT AUTO_INCREMENT PRIMARY KEY,
     id_student INT NOT NULL,
+    id_employee INT NOT NULL,
     loan_date DATE NOT NULL,
     return_date DATE NOT NULL,
     loan_days INT NOT NULL,
     renewals INT DEFAULT 0,
     late_fee DECIMAL(5,2) DEFAULT 0.00,
     status ENUM('active', 'returned') DEFAULT 'active',
-    FOREIGN KEY (id_student) REFERENCES students(id_student)
+    FOREIGN KEY (id_student) REFERENCES students(id_student),
+    FOREIGN KEY (id_employee) REFERENCES employees(id_employee)
 );
 
 CREATE TABLE IF NOT EXISTS loan_books (
@@ -72,7 +74,7 @@ CREATE TABLE IF NOT EXISTS employees (
     national_id VARCHAR(10) UNIQUE NOT NULL,
     address VARCHAR(150) NOT NULL, 
     phone_number VARCHAR(15) NOT NULL,
-    age TINYINT DEFAULT 1,
+    birthdate DATE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     role ENUM('manager', 'librarian') NOT NULL,
@@ -116,7 +118,7 @@ INSERT INTO employees (
     '05438654-8',
     'Av. UFG',
     '7777-7777',
-    28,
+    '2000-05-08',
     'gerson@gmail.com',
     'admin',
     'manager',

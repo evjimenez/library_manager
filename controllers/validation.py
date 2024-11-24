@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 #A partir de aqui son validaciones para el formulario LIBROS
 def validate_title(title):
@@ -104,14 +105,23 @@ def validate_phone(phone):
         return False, 'El formato del teléfono no es válido'
     return True, ''
 
-def validate_age(age):
+def validate_birthdate(birthdate):
     try:
-        age = int(age)
-        if age < 18 or age > 100:
-            return False, 'La edad debe estar entre 18 y 100 años'
-        return True, age
+        # Convertir la fecha de nacimiento desde formato 'YYYY-MM-DD' a un objeto datetime
+        birthdate_obj = datetime.strptime(birthdate, '%Y-%m-%d')
+        today = datetime.today()  # Obtener la fecha actual
+
+        # Calcular la diferencia en años entre la fecha actual y la fecha de nacimiento
+        age = today.year - birthdate_obj.year
+        if today.month < birthdate_obj.month or (today.month == birthdate_obj.month and today.day < birthdate_obj.day):
+            age -= 1  # Si la fecha de cumpleaños aún no ha ocurrido este año, restamos un año
+
+        # Verificar si la persona tiene al menos 18 años
+        if age < 18:
+            return False, 'El empleado debe ser mayor de 18 años'
+        return True, ''
     except ValueError:
-        return False, 'La edad debe ser un número entero'
+        return False, 'El formato de la fecha de nacimiento no es válido. Use el formato YYYY-MM-DD.'
 
 def validate_email(email):
     if len(email) > 100:
