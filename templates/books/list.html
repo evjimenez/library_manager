@@ -59,10 +59,16 @@
             <td>{{ book[6] }}</td>
             <td>{{ book[7] }}</td>
             <td>
-                <a href="{{ url_for('edit_book', id=book[0]) }}" class="btn btn-sm btn-warning">Editar</a>
-                <form action="{{ url_for('archive_book', id=book[0]) }}" method="POST" style="display:inline;">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de que desea archivar este libro?')">Archivar</button>
-                </form>
+                {% if session.get('role') == 'manager' %}
+                    <a href="{{ url_for('edit_book', id=book[0]) }}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <form action="{{ url_for('archive_book', id=book[0]) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de que desea archivar este libro?')">
+                            <i class="fas fa-archive"></i> Archivar
+                        </button>
+                    </form>
+                {% endif %}
                 <a href="#" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detailsModal" data-id="{{ book[0] }}">Ver Estado</a>
             </td>
         </tr>

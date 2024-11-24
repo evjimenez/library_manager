@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS books (
     title VARCHAR(150) NOT NULL,
     author VARCHAR(50) NOT NULL,
     materia VARCHAR(20) NOT NULL,
-    code VARCHAR(10) UNIQUE NOT NULL,
+    code VARCHAR(15) UNIQUE NOT NULL,
     acquisition_date DATE,
     quantity INT DEFAULT 1,
     stock INT DEFAULT 1,
