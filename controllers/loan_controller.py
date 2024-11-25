@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, session
 import json
+from config import mysql
 from config import app
 from models.loan import Loan
 from models.student import Student
@@ -45,15 +46,28 @@ def loan_preview(loan_id):
         flash('Préstamo no encontrado', 'error')
         return redirect(url_for('list_loans'))
     
-    student = Student.get_by_id(loan[1])  # id_student deber ser el segundo campo 
+    student = Student.get_by_id(loan[1])
     books = Loan.get_books_for_loan(loan_id)
     
-    # Necesito comprobar si estan los datos
-    print("Loan:", loan)
-    print("Student:", student)
-    print("Books:", books)  
+    # Obtener información del empleado que registró el préstamo
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute("""
+            SELECT e.first_name, e.last_name 
+            FROM employees e 
+            JOIN loans l ON e.id_employee = l.id_employee 
+            WHERE l.id_loan = %s
+        """, (loan_id,))
+        employee = cur.fetchone()
+        employee_name = f"{employee[0]} {employee[1]}" if employee else "No registrado"
+    finally:
+        cur.close()
     
-    return render_template('loans/preview.html', loan=loan, student=student, books=books)
+    return render_template('loans/preview.html', 
+                         loan=loan, 
+                         student=student, 
+                         books=books,
+                         employee_name=employee_name)
 
 @app.route('/loans/edit/<int:id>', methods=['GET', 'POST'])
 def edit_loan(id):

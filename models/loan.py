@@ -1,8 +1,10 @@
+from flask import session
 from config import mysql
 from datetime import datetime, timedelta
 from models.book import Book
 from models.student import Student
 import logging
+from utils.debug_utils import print_query_results
 
 class Loan:
     def __init__(self, id_student, loan_date, return_date, loan_days, renewals=0, late_fee=0.00):
@@ -17,37 +19,27 @@ class Loan:
     def create(id_student, loan_days, books):
         logging.info(f"Creating loan: student={id_student}, days={loan_days}, books={books}")
         
-        # Validar que el estudiante existe
         cur = mysql.connection.cursor()
-        cur.execute("SELECT id_student FROM students WHERE id_student = %s", (id_student,))
-        if not cur.fetchone():
-            return False, "Estudiante no encontrado"
-        
-        # Validar que la lista de libros no esté vacía
-        if not books:
-            return False, "No se han seleccionado libros"
-        
-        # Validar la estructura de cada libro
-        for book in books:
-            if not isinstance(book, dict) or 'id' not in book or 'quantity' not in book:
-                return False, "Formato de libros inválido"
-        
         try:
             loan_date = datetime.now().date()
             return_date = loan_date + timedelta(days=loan_days)
             
-            # Verificar si el estudiante ya tiene el máximo de libros prestados
+            # Validar que el estudiante existe y no tenga demasiados libros
             current_loans = Student.get_borrowed_books_count(id_student)
             total_books = sum(book['quantity'] for book in books)
-            logging.info(f"prestamo actual: {current_loans}, Total libros nuevos: {total_books}")
             
             if current_loans + total_books > 3:
-                logging.warning("maximo 3")
                 return False, "El estudiante no puede prestar más de 3 libros en total."
 
-            # Insertar el nuevo préstamo
-            cur.execute("INSERT INTO loans (id_student, loan_date, return_date, loan_days) VALUES (%s, %s, %s, %s)",
-                        (id_student, loan_date, return_date, loan_days))
+            # Obtener el id del empleado de la sesión
+            id_employee = session.get('employee_id')
+            
+            # Insertar el préstamo incluyendo el id del empleado
+            cur.execute("""
+                INSERT INTO loans (id_student, loan_date, return_date, loan_days, id_employee) 
+                VALUES (%s, %s, %s, %s, %s)
+            """, (id_student, loan_date, return_date, loan_days, id_employee))
+            
             id_loan = cur.lastrowid
             
             # Asociar cada libro al préstamo
@@ -92,6 +84,8 @@ class Loan:
             cur.execute("""
                 SELECT l.*, s.name, s.lastname, 
                     GROUP_CONCAT(DISTINCT b.title SEPARATOR ', ') as books,
+                    e.first_name as employee_first_name, 
+                    e.last_name as employee_last_name,
                     CASE 
                         WHEN l.status = 'returned' THEN 'Devuelto'
                         ELSE 'Activo'
@@ -100,14 +94,16 @@ class Loan:
                 JOIN students s ON l.id_student = s.id_student
                 LEFT JOIN loan_books lb ON l.id_loan = lb.id_loan
                 LEFT JOIN books b ON lb.id_book = b.id_book
+                JOIN employees e ON l.id_employee = e.id_employee
                 GROUP BY l.id_loan
-                ORDER BY l.loan_date DESC
+                ORDER BY l.id_loan DESC
             """)
             loans = cur.fetchall()
+            
+            # Debug print
+            print_query_results(loans, "Préstamos")
+            
             return loans
-        except Exception as e:
-            print(f"Error al obtener los préstamos: {e}")
-            return []
         finally:
             cur.close()
             
@@ -131,6 +127,10 @@ class Loan:
                 ORDER BY l.loan_date DESC
             """)
             active_loans = cur.fetchall()
+
+            # Debug print
+            print_query_results(active_loans, "Préstamos Activos")
+
             return active_loans
         finally:
             cur.close()

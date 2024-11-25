@@ -1,49 +1,55 @@
 {% extends "layout.html" %}
 {% block content %}
+
 <h1>Lista de Préstamos</h1>
+
 <a href="{{ url_for('create_loan') }}" class="btn btn-primary mb-3">Registrar Nuevo Préstamo</a>
+
 {% if loans %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Estudiante</th>
-            <th>Libros</th>
-            <th>Fecha de Préstamo</th>
-            <th>Fecha de Devolución</th>
-            <th>Días de Préstamo</th>
-            <!-- Aqui vamos a comentar este espacio porque en esta lista 
-             no es necesario mostrar estos espacios -->
-            <!-- <th>Renovaciones</th>
-            <th>Mora</th> -->
-            <th>Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for loan in loans %}
-        <tr>
-            <td>{{ loan[0] }}</td>
-            <td>{{ loan[8] }} {{ loan[9] }}</td>
-            <td>
-                {% if loan[11] == 'Devuelto' and not loan[10] %}
-                    Libros devueltos
-                {% else %}
-                    {{ loan[10] if loan[10] else 'No hay libros registrados' }}
-                {% endif %}
-            </td>
-            <td>{{ loan[2] }}</td>
-            <td>{{ loan[3] }}</td>
-            <td>{{ loan[4] }}</td>
-            <!-- Tambien aqui lo comentamos porque son los campos en los que se llenan
-             las renovaciones y mora-->
-            <!-- <td>{{ loan[5] }}</td>
-            <td>${{ loan[6] }}</td> -->
-            <td>{{ loan[11] }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Estudiante</th>
+                <th>Libros</th>
+                <th>Fecha de Préstamo</th>
+                <th>Fecha de Devolución</th>
+                <th>Días de Préstamo</th>
+                <th>Registrado por</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan[0] }}</td>
+                <td>{{ loan[9] }} {{ loan[10] }}</td>
+                <td>
+                    {% if loan[7] == 'returned' %}
+                        Libros devueltos
+                    {% else %}
+                        {{ loan[11] if loan[11] else 'No hay libros registrados' }}
+                    {% endif %}
+                </td>
+                <td>{{ loan[2] }}</td>
+                <td>{{ loan[3] }}</td>
+                <td>{{ loan[4] }}</td>
+                <td>{{ loan[12] }} {{ loan[13] }}</td>
+                <td>
+                    {% if loan[7] == 'returned' %}
+                        Devuelto
+                    {% else %}
+                        Activo
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% else %}
-<p>No hay préstamos registrados.</p>
+<p class="alert alert-info">No hay préstamos registrados.</p>
 {% endif %}
+
 {% endblock %}

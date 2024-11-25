@@ -4,6 +4,7 @@ from models.loan import Loan
 from models.book import Book
 from models.student import Student
 import logging
+from utils.debug_utils import print_query_results
 
 class Returns:
     @staticmethod
@@ -132,7 +133,9 @@ class Returns:
                 ORDER BY r.return_date DESC
             """)
             returns = cur.fetchall()
-            print(f"Devoluciones recuperadas: {returns}")  # Depuración
+           
+            # Debug print
+            print_query_results(returns, "Devoluciones")
             return returns
         except Exception as e:
             print(f"Error al obtener las devoluciones: {e}")
